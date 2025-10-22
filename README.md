@@ -12,3 +12,4 @@ What this workflow does:
 Why I’m excited: it’s fast to build, easy to iterate, and it boosts my execution speed as an AI/Data Engineer.
 Thinking of learning AI Agents? Highly recommend.
 If you want my n8n template or node settings, drop a “AI Agent” in the comments and I’ll share. 🙌
+<img width="1219" height="872" alt="Image" src="https://github.com/user-attachments/assets/ae59b8d8-47d4-4f96-b10d-6cc82110b674" />
