@@ -19,17 +19,4 @@ This workflow automates the process of scraping a webpage, cleaning its HTML, co
 It can be triggered either by: <br>
 A chat message (human input to the AI Agent), or <br>
 Another workflow execution (via API or automation chain). <br>
-
-### Detailed Task Description
-1️⃣ When Chat Message Received <br>
-Trigger node: activates when a chat message is sent to the AI Agent. <br>
-Starts the process when a user interacts via chat (e.g., “scrape this webpage”). <br>
-
-2️⃣ AI Agent <br>
-Connects to OpenAI Chat Model (GPT-based model). <br>
-Interprets the message and determines what to scrape or extract. <br>
-Can use memory and tools configured in the workflow (e.g., HTTP requests, parsing). <br>
-
-3️⃣ When Executed by Another Workflow <br>
-Alternate trigger node for automation. <br>
-Allows another n8n workflow to call this one and reuse its scraping capabilities. <br>
+<img width="1838" height="870" alt="Image" src="https://github.com/user-attachments/assets/9388ff31-9a1f-4180-8720-867d7c708715" />
