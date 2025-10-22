@@ -1,0 +1,480 @@
+{
+  "name": "Assistant Manager email",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -1856,
+        -16
+      ],
+      "id": "304c8f0e-47b5-43bb-8e7c-2722a4dff46b",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wkbzXxttIgQb5DQv",
+          "name": "Gmail account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "97c1e7fe-cdff-4556-9a29-4fb4cd904acc",
+              "leftValue": "={{ $json.Subject }}",
+              "rightValue": "Meeting",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "8ab9fe4d-5286-49d9-b314-78e55476183e",
+              "leftValue": "={{ $json.Subject }}",
+              "rightValue": "intervention",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "fbd65c72-80a9-401b-8c18-b7c42d971c7d",
+              "leftValue": "={{ $json.Subject }}",
+              "rightValue": "sécurité",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "7f3c4f11-eb07-4c44-aa82-bb72b761f471",
+              "leftValue": "={{ $json.Subject }}",
+              "rightValue": "security",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "690b6f5d-45ab-4177-9422-5aee28c6e784",
+              "leftValue": "={{ $json.Subject }}",
+              "rightValue": "mission",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "f6ac7815-6add-44fc-8589-c99bea3204c0",
+              "leftValue": "={{ $json.Subject }}",
+              "rightValue": "opportunité",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "6e59b29d-a01e-4721-a416-d79f5bfe9d61",
+              "leftValue": "={{ $json.Subject }}",
+              "rightValue": "freelance",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "037747a2-89d5-4e8f-aaf9-ed7b06abb4b8",
+              "leftValue": "={{ $json.Subject }}",
+              "rightValue": "opportunity",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "d5dbbb1f-c324-4bc0-8758-b1d9b2525b10",
+              "leftValue": "={{ $json.Subject }}",
+              "rightValue": "rdv",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "4dc41993-c8ff-47ee-bdfa-f4351759f36e",
+              "leftValue": "={{ $json.Subject }}",
+              "rightValue": "Rdv",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1584,
+        -16
+      ],
+      "id": "8e6dee4c-223d-4196-a6e0-9c39c787315c",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "messageId": "={{ $json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -1408,
+        176
+      ],
+      "id": "816b8b67-ccd3-4508-8bc6-651d3dbd82f5",
+      "name": "Delete a message",
+      "webhookId": "f290a263-a70f-4bb6-a967-b46e3aac020d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wkbzXxttIgQb5DQv",
+          "name": "Gmail account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Subject : {{ $json.Subject }}\nContent : {{ $json.snippet }}\nTarget : {{ $json.From }}\n",
+        "options": {
+          "systemMessage": "=You are my Assistant Manager. Your Job is to take the 'subject' and 'content' and decide which tool you need to achieve a task.\n\nYou will must decide tool like 'create an event in google calendar' if the 'subject' contains 'meeting' or 'Meeting' or 'rdv' or 'Rdv'\n\nYou will must decide tool like 'create a draft in gmail' if the 'subjet' contains 'opportunity' or 'mission'. Don't forget to create text to response based on 'Subject' and 'Content' of message.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -1184,
+        -16
+      ],
+      "id": "3a7a0df7-846a-4f3d-a91d-fc4d6c04df96",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1184,
+        256
+      ],
+      "id": "9b6ff9bd-4fbc-424a-88b6-b9ac9999117e",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "dReBCNd5nWALMsNp",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Create a draft reply based on 'Subject' and 'Message'",
+        "resource": "draft",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        -1040,
+        240
+      ],
+      "id": "2c7eb8b5-7017-40a8-921b-90fe1793a3ce",
+      "name": "Create a draft in Gmail",
+      "webhookId": "8d943548-da12-4440-a9a6-058f747cf3d9",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wkbzXxttIgQb5DQv",
+          "name": "Gmail account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "gaussjatta1@gmail.com",
+          "mode": "list",
+          "cachedResultName": "gaussjatta1@gmail.com"
+        },
+        "additionalFields": {
+          "description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Description', ``, 'string') }}",
+          "summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Summary', ``, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        -880,
+        256
+      ],
+      "id": "c58ba5a1-dbe3-47dc-824d-524de9be1455",
+      "name": "Create an event in Google Calendar",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "BTDBQvxz7P4poUXM",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1904,
+        416
+      ],
+      "id": "49c0f443-a21b-4b40-a7c4-953790e332cb",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "gaussjatta1@gmail.com",
+          "mode": "list",
+          "cachedResultName": "gaussjatta1@gmail.com"
+        },
+        "timeMin": "={{$now.startOf('day')}}",
+        "timeMax": "={{$now.plus(2, 'day').endOf('day')}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        -1600,
+        416
+      ],
+      "id": "723e2388-d69c-4cc1-8e17-1c665ac76c3f",
+      "name": "Get many events",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "BTDBQvxz7P4poUXM",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6f496a89-d10c-4b45-8a66-c6bcc477d181",
+              "name": "subject",
+              "value": "={{ $json.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "15ca2e3a-d94a-4e11-be70-1b570c5ebd99",
+              "name": "body",
+              "value": "={{ $json.description }}",
+              "type": "string"
+            },
+            {
+              "id": "6006146f-2e55-48e7-a1b2-61e963fbf8ea",
+              "name": "Date Starter",
+              "value": "={{ $json.start.dateTime }}",
+              "type": "string"
+            },
+            {
+              "id": "82c5e169-c70f-47e4-a118-218545a5efe2",
+              "name": "Date Ending",
+              "value": "={{ $json.end.dateTime }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1280,
+        416
+      ],
+      "id": "91d0719b-67fb-4380-9b12-88a8ba028616",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "sendTo": "gaussjatta1@outlook.fr",
+        "subject": "=Rappel : {{ $json.subject }}  dont la date : Start : {{ $json[\"Date Starter\"] }} End : {{ $json[\"Date Ending\"] }}",
+        "emailType": "text",
+        "message": "={{ $json.body }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -960,
+        416
+      ],
+      "id": "61544b03-6ef3-4310-a00b-2e0516c9c2e1",
+      "name": "Send a message",
+      "webhookId": "af04f82a-56b3-46a0-8bd7-262e9b2dd049",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wkbzXxttIgQb5DQv",
+          "name": "Gmail account 3"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Delete a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a draft in Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create an event in Google Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get many events",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many events": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d6d2e343-d6bc-4ea4-9221-5e7f333b7806",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a6f1ec5bddb29737607d2d2671c53399cd8a12466b2090b7c8e527b190447746"
+  },
+  "id": "GZ9LYjAAr5aEvAZJ",
+  "tags": []
+}
